@@ -40,16 +40,16 @@ Open a table page, for example: `https://0.0.0.0:7288/t/A1`.
 ```mermaid
 flowchart LR
     U[User Browser]
-    B[Blazor WASM Components\nTable.razor]
-    S[OrderState\n(Total, Lines)]
+    B["&lturl&gt/t"]
+    S["OrderState<br>(Total, Lines)"]
     LS[(Browser localStorage)]
-    M[menu.json\n(orders/wwwroot)]
+    M["/menu"]
     HC[HttpClient]
 
     U -->|Clicks Add/+/−/Remove| B -->|mutates| S
-    B -->|persist json| LS
+    B -->|persist| LS
     B -->|load cached state| LS
-    B -->|GetMenuAsync()| HC -->|GET /menu.json| M
+    B -->|GetMenuAsync| HC -->|GET /menu| M
 ```
 
 ## Typical interaction sequence (Mermaid)
