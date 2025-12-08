@@ -21,6 +21,13 @@ else
             <div class="total">Total: @(_state.Total.ToString("C"))</div>
         </header>
 
+        @if (_fallbackWarning)
+        {
+            <div class="warning" role="status">
+                Backend unavailable: showing local sample menu. Orders will be saved locally until connection is restored.
+            </div>
+        }
+
         <section class="menu">
             @foreach (var group in _menuByCategory)
             {
@@ -33,6 +40,10 @@ else
                                 <div class="mi-name">@item.Name</div>
                                 <div class="mi-price">@item.Price.ToString("C")</div>
                             </div>
+                            @if (!string.IsNullOrWhiteSpace(item.ThumbnailImageUrl))
+                            {
+                                <img src="@item.ThumbnailImageUrl" alt="@item.Name" class="mi-thumb" />
+                            }
                             @if (!string.IsNullOrWhiteSpace(item.Description))
                             {
                                 <div class="mi-desc">@item.Description</div>
@@ -84,6 +95,7 @@ else
     private List<MenuItem> _menu = new();
     private Dictionary<string, List<MenuItem>> _menuByCategory = new();
     private OrderState _state = new() { TableId = "" };
+    private bool _fallbackWarning;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -106,6 +118,7 @@ else
                 .GroupBy(m => string.IsNullOrWhiteSpace(m.Category) ? "Menu" : m.Category!)
                 .OrderBy(g => g.Key)
                 .ToDictionary(g => g.Key, g => g.OrderBy(i => i.Name).ToList());
+            _fallbackWarning = Menu.UsedFallback;
         }
         catch (Exception ex)
         {
@@ -151,10 +164,19 @@ else
 
     private async Task SubmitOrder()
     {
-        // Placeholder: In real app, POST to backend with TableId and lines.
-        // For now, we just keep the cart (user can continue to add),
-        // or optionally clear after confirmation. We'll keep it to allow add-ons.
-        // You could log to console or show a toast.
-        await Persist();
+        var orderId = await Menu.PlaceOrderAsync(_state);
+        if (!string.IsNullOrWhiteSpace(orderId))
+        {
+            // Clear local order after successful submit
+            _state.Clear();
+            await Persist();
+            _error = null;
+        }
+        else
+        {
+            // Could not submit (likely on fallback). Keep order in local storage and show info.
+            _error = "Order not submitted (offline/backend unavailable). It remains saved locally.";
+            await Persist();
+        }
     }
 }

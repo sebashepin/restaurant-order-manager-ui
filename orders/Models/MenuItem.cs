@@ -7,4 +7,5 @@ public sealed class MenuItem
     public string? Description { get; set; }
     public required decimal Price { get; set; }
     public string? Category { get; set; }
+    public string? ThumbnailImageUrl { get; set; }
 }

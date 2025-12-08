@@ -1,0 +1,93 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "RestaurantOrderManager.Backend";
+
+package menu;
+
+import "google/protobuf/timestamp.proto";
+
+// Service exposing menu and ordering operations
+service Menu {
+  // a) Returns the full menu with items and image URLs
+  rpc GetMenu (GetMenuRequest) returns (GetMenuResponse);
+
+  // b) Receives an order (list of item ids + amounts) and returns an order ID
+  rpc PlaceOrder (PlaceOrderRequest) returns (PlaceOrderResponse);
+
+  // c) Queries an order's status given an ID
+  rpc GetOrderStatus (GetOrderStatusRequest) returns (GetOrderStatusResponse);
+
+  // d) Gets all live order IDs for a given table
+  rpc GetLiveOrdersForTable (GetLiveOrdersForTableRequest) returns (GetLiveOrdersForTableResponse);
+}
+
+// Common types
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  SENT = 1;
+  PREPARING = 2;
+  DELIVERING = 3;
+  DELIVERED = 4;
+  PAID = 5;
+}
+
+message MenuItem {
+  string id = 1;                        // e.g., "coke"
+  string name = 2;                      // e.g., "Coca Cola"
+  string description = 3;               // e.g., "Chilled can"
+  double price = 4;                     // in currency units
+  string category = 5;                  // e.g., "Drinks"
+  string main_image_url = 6;            // full-size image URL
+  string thumbnail_image_url = 7;       // thumbnail image URL
+}
+
+// a) GetMenu
+message GetMenuRequest {
+  google.protobuf.Timestamp timestamp = 1;  // client timestamp
+}
+
+message GetMenuResponse {
+  repeated MenuItem items = 1;
+  google.protobuf.Timestamp timestamp = 2;  // server timestamp
+}
+
+// b) PlaceOrder
+message OrderLineItem {
+  string item_id = 1;     // menu item id
+  int32 amount = 2;       // quantity ordered
+}
+
+message PlaceOrderRequest {
+  // Optional context fields can be extended later (e.g., table_id, notes)
+  repeated OrderLineItem items = 1;
+  google.protobuf.Timestamp timestamp = 2;  // client timestamp
+  string table_id = 3;                       // table identifier (optional but useful)
+}
+
+message PlaceOrderResponse {
+  string order_id = 1;
+  google.protobuf.Timestamp timestamp = 2;   // server timestamp
+}
+
+// c) GetOrderStatus
+message GetOrderStatusRequest {
+  string order_id = 1;
+  google.protobuf.Timestamp timestamp = 2;   // client timestamp
+}
+
+message GetOrderStatusResponse {
+  string order_id = 1;
+  OrderStatus status = 2;
+  google.protobuf.Timestamp timestamp = 3;   // server timestamp
+}
+
+// d) GetLiveOrdersForTable
+message GetLiveOrdersForTableRequest {
+  string table_id = 1;
+  google.protobuf.Timestamp timestamp = 2;   // client timestamp
+}
+
+message GetLiveOrdersForTableResponse {
+  repeated string order_ids = 1;
+  google.protobuf.Timestamp timestamp = 2;   // server timestamp
+}
