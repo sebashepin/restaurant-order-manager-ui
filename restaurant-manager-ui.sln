@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "orders", "orders/orders.csproj", "{ADB29D2E-BF58-4749-B144-0F7E20D2BB43}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F032253E-1A21-4C8A-A0A4-E0CF961D7542}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADB29D2E-BF58-4749-B144-0F7E20D2BB43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADB29D2E-BF58-4749-B144-0F7E20D2BB43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADB29D2E-BF58-4749-B144-0F7E20D2BB43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADB29D2E-BF58-4749-B144-0F7E20D2BB43}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

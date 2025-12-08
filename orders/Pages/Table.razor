@@ -1,0 +1,160 @@
+﻿@page "/t/{TableId}"
+
+@inject IMenuService Menu
+@inject ILocalStorage Storage
+
+<PageTitle>Table @TableId</PageTitle>
+
+@if (_loading)
+{
+    <div class="loading">Loading…</div>
+}
+else if (!string.IsNullOrWhiteSpace(_error))
+{
+    <div class="error">@_error</div>
+}
+else
+{
+    <div class="table-page">
+        <header class="topbar">
+            <h1>Table @TableId</h1>
+            <div class="total">Total: @(_state.Total.ToString("C"))</div>
+        </header>
+
+        <section class="menu">
+            @foreach (var group in _menuByCategory)
+            {
+                <h2>@group.Key</h2>
+                <ul class="menu-list">
+                    @foreach (var item in group.Value)
+                    {
+                        <li class="menu-item">
+                            <div class="mi-head">
+                                <div class="mi-name">@item.Name</div>
+                                <div class="mi-price">@item.Price.ToString("C")</div>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(item.Description))
+                            {
+                                <div class="mi-desc">@item.Description</div>
+                            }
+                            <button class="btn add" @onclick="() => Add(item)">Add</button>
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+
+        <section class="cart" aria-live="polite">
+            <h2>Order</h2>
+            @if (_state.Lines.Count == 0)
+            {
+                <div class="empty">Your order is empty.</div>
+            }
+            else
+            {
+                <ul class="cart-list">
+                    @foreach (var line in _state.Lines)
+                    {
+                        <li class="cart-line">
+                            <div class="cl-name">@line.Name</div>
+                            <div class="cl-controls">
+                                <button class="btn qty" @onclick="() => Decrement(line.ItemId)">−</button>
+                                <span class="qty-val">@line.Quantity</span>
+                                <button class="btn qty" @onclick="() => Increment(line.ItemId)">+</button>
+                                <span class="cl-total">@line.LineTotal.ToString("C")</span>
+                                <button class="btn remove" title="Remove" aria-label="Remove @line.Name" @onclick="() => Remove(line.ItemId)">✕</button>
+                            </div>
+                        </li>
+                    }
+                </ul>
+                <div class="cart-footer">
+                    <div class="grand-total">Total: @_state.Total.ToString("C")</div>
+                    <button class="btn submit" @onclick="SubmitOrder">Submit Order</button>
+                </div>
+            }
+        </section>
+    </div>
+}
+
+@code {
+    [Parameter] public string? TableId { get; set; }
+
+    private bool _loading = true;
+    private string? _error;
+    private List<MenuItem> _menu = new();
+    private Dictionary<string, List<MenuItem>> _menuByCategory = new();
+    private OrderState _state = new() { TableId = "" };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _loading = true;
+        _error = null;
+        if (string.IsNullOrWhiteSpace(TableId))
+        {
+            _error = "Invalid table id.";
+            _loading = false;
+            return;
+        }
+
+        _state = await Storage.GetObjectAsync<OrderState>(StateKey(TableId))
+                 ?? new OrderState { TableId = TableId };
+
+        try
+        {
+            _menu = (await Menu.GetMenuAsync()).ToList();
+            _menuByCategory = _menu
+                .GroupBy(m => string.IsNullOrWhiteSpace(m.Category) ? "Menu" : m.Category!)
+                .OrderBy(g => g.Key)
+                .ToDictionary(g => g.Key, g => g.OrderBy(i => i.Name).ToList());
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task Persist() => await Storage.SetObjectAsync(StateKey(TableId!), _state);
+
+    private string StateKey(string tableId) => $"order:{tableId}";
+
+    private async Task Add(MenuItem item)
+    {
+        _state.Add(item, 1);
+        await Persist();
+        StateHasChanged();
+    }
+
+    private async Task Increment(string itemId)
+    {
+        _state.Increment(itemId);
+        await Persist();
+        StateHasChanged();
+    }
+
+    private async Task Decrement(string itemId)
+    {
+        _state.Decrement(itemId);
+        await Persist();
+        StateHasChanged();
+    }
+
+    private async Task Remove(string itemId)
+    {
+        _state.Remove(itemId);
+        await Persist();
+        StateHasChanged();
+    }
+
+    private async Task SubmitOrder()
+    {
+        // Placeholder: In real app, POST to backend with TableId and lines.
+        // For now, we just keep the cart (user can continue to add),
+        // or optionally clear after confirmation. We'll keep it to allow add-ons.
+        // You could log to console or show a toast.
+        await Persist();
+    }
+}

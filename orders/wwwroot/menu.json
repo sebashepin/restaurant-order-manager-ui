@@ -1,0 +1,9 @@
+﻿[
+  { "id": "coke", "name": "Coca Cola", "description": "Chilled can", "price": 2.50, "category": "Drinks" },
+  { "id": "water", "name": "Still Water", "description": "500ml bottle", "price": 2.00, "category": "Drinks" },
+  { "id": "margherita", "name": "Margherita Pizza", "description": "Tomato, mozzarella, basil", "price": 9.50, "category": "Mains" },
+  { "id": "pepperoni", "name": "Pepperoni Pizza", "description": "Pepperoni, mozzarella", "price": 11.00, "category": "Mains" },
+  { "id": "fries", "name": "Fries", "description": "Crispy golden fries", "price": 3.50, "category": "Sides" },
+  { "id": "salad", "name": "Green Salad", "description": "Mixed leaves, vinaigrette", "price": 4.00, "category": "Sides" },
+  { "id": "brownie", "name": "Chocolate Brownie", "description": "With cocoa nibs", "price": 4.50, "category": "Desserts" }
+]
