@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace orders.Services;
+namespace RestaurantOrderManager.UI.Orders.Services;
 
 public sealed class LocalStorageJs(IJSRuntime js) : ILocalStorage
 {

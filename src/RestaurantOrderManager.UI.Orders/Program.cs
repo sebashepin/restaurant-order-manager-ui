@@ -1,9 +1,9 @@
 using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using orders;
-using orders.Services;
 using RestaurantOrderManager.Backend;
+using RestaurantOrderManager.UI.Orders;
+using RestaurantOrderManager.UI.Orders.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -13,14 +13,14 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<ILocalStorage, LocalStorageJs>();
 
 // gRPC-Web client using configurable backend URL from appsettings.json: Backend:BaseAddress
-var backendBase = builder.Configuration["Backend:BaseAddress"] ?? "https://localhost:5001";
-
+var backendBase = builder.Configuration["Backend:BaseAddress"] ?? "http://192.168.0.206:5134";
+Console.WriteLine($"Backend base address: {backendBase}");
 builder.Services
     .AddGrpcClient<Menu.MenuClient>(o =>
     {
         o.Address = new Uri(backendBase);
     })
-    .AddHttpMessageHandler(() => new GrpcWebHandler(GrpcWebMode.GrpcWebText));
+    .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(new HttpClientHandler()));
 
 // Register fallback JSON service and primary gRPC service implementing IMenuService
 builder.Services.AddScoped<MenuServiceWwwroot>();

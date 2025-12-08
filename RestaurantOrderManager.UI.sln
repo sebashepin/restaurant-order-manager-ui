@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "orders", "orders/orders.csproj", "{ADB29D2E-BF58-4749-B144-0F7E20D2BB43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantOrderManager.UI.Orders", "src/RestaurantOrderManager.UI.Orders/RestaurantOrderManager.UI.Orders.csproj", "{ADB29D2E-BF58-4749-B144-0F7E20D2BB43}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F032253E-1A21-4C8A-A0A4-E0CF961D7542}"
 	ProjectSection(SolutionItems) = preProject

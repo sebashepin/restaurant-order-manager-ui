@@ -1,6 +1,6 @@
-﻿using orders.Models;
+﻿using RestaurantOrderManager.UI.Orders.Models;
 
-namespace orders.Services;
+namespace RestaurantOrderManager.UI.Orders.Services;
 
 public interface IMenuService
 {
@@ -12,4 +12,6 @@ public interface IMenuService
 
     // Indicates whether the last GetMenuAsync used the fallback source
     bool UsedFallback { get; }
+    
+    string? Error { get; }
 }

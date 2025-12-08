@@ -1,16 +1,16 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using Grpc.Net.Client.Web;
 using RestaurantOrderManager.Backend;
-using UiMenuItem = orders.Models.MenuItem;
-using orders.Models;
+using RestaurantOrderManager.UI.Orders.Models;
+using UiMenuItem = RestaurantOrderManager.UI.Orders.Models.MenuItem;
 
-namespace orders.Services;
+namespace RestaurantOrderManager.UI.Orders.Services;
 
 public sealed class MenuServiceGrpc(Menu.MenuClient client, MenuServiceWwwroot fallback) : IMenuService
 {
     private IReadOnlyList<UiMenuItem>? _cache;
     public bool UsedFallback { get; private set; }
+    public string? Error { get; private set; }
 
     public async ValueTask<IReadOnlyList<UiMenuItem>> GetMenuAsync(CancellationToken ct = default)
     {
@@ -26,12 +26,13 @@ public sealed class MenuServiceGrpc(Menu.MenuClient client, MenuServiceWwwroot f
             UsedFallback = false;
             return _cache;
         }
-        catch (Exception)
+        catch (Exception e)
         {
             // Fallback to static JSON
             var items = await fallback.GetMenuAsync(ct);
             _cache = items;
             UsedFallback = true;
+            Error = e.Message;
             return _cache;
         }
     }

@@ -1,12 +1,13 @@
 ﻿using System.Net.Http.Json;
-using orders.Models;
+using RestaurantOrderManager.UI.Orders.Models;
 
-namespace orders.Services;
+namespace RestaurantOrderManager.UI.Orders.Services;
 
 public sealed class MenuServiceWwwroot(HttpClient http) : IMenuService
 {
     private IReadOnlyList<MenuItem>? _cache;
     public bool UsedFallback { get; private set; }
+    public string? Error { get; }
 
     public async ValueTask<IReadOnlyList<MenuItem>> GetMenuAsync(CancellationToken ct = default)
     {

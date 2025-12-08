@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace orders.Models;
+namespace RestaurantOrderManager.UI.Orders.Models;
 
 public sealed class OrderState
 {

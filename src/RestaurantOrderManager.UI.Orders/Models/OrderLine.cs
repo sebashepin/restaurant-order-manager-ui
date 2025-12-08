@@ -1,4 +1,4 @@
-﻿namespace orders.Models;
+﻿namespace RestaurantOrderManager.UI.Orders.Models;
 
 public sealed class OrderLine
 {

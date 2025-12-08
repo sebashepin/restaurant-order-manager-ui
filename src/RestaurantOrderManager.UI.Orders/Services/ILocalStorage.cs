@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace orders.Services;
+namespace RestaurantOrderManager.UI.Orders.Services;
 
 public interface ILocalStorage
 {
