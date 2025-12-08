@@ -1,6 +1,6 @@
 # Build orders app
 
-name: .NET
+name: Build and test /orders
 
 on:
   push:
