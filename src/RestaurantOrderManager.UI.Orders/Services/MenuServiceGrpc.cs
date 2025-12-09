@@ -1,6 +1,6 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using RestaurantOrderManager.Backend;
+using RestaurantOrderManager.Backend.Grpc;
 using RestaurantOrderManager.UI.Orders.Models;
 using UiMenuItem = RestaurantOrderManager.UI.Orders.Models.MenuItem;
 
@@ -22,7 +22,7 @@ public sealed class MenuServiceGrpc(Menu.MenuClient client, MenuServiceWwwroot f
                 Timestamp = Timestamp.FromDateTime(DateTime.UtcNow)
             }, cancellationToken: ct);
 
-            _cache = resp.Items.Select(Map).ToList();
+            _cache = resp.Items.Select(ToUiMenuItem).ToList();
             UsedFallback = false;
             return _cache;
         }
@@ -67,8 +67,8 @@ public sealed class MenuServiceGrpc(Menu.MenuClient client, MenuServiceWwwroot f
         }
     }
 
-    private static UiMenuItem Map(RestaurantOrderManager.Backend.MenuItem m)
-        => new UiMenuItem
+    private static UiMenuItem ToUiMenuItem(Backend.Grpc.MenuItem m)
+        => new()
         {
             Id = m.Id,
             Name = m.Name,

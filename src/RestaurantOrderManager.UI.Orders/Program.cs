@@ -1,7 +1,7 @@
 using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using RestaurantOrderManager.Backend;
+using RestaurantOrderManager.Backend.Grpc;
 using RestaurantOrderManager.UI.Orders;
 using RestaurantOrderManager.UI.Orders.Services;
 
