@@ -10,7 +10,16 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all"/>
-        <PackageReference Include="RestaurantOrderManager.Backend.Proto" Version="1.0.2" />
-    </ItemGroup>
+        <PackageReference Include="Grpc.Net.Client.Web" Version="2.71.0" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
+        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.71.0" />
+        <PackageReference Include="Google.Protobuf" Version="3.30.2" />
+        <PackageReference Include="Grpc.Tools" Version="2.76.0" PrivateAssets="all" />
+        <PackageReference Include="RestaurantOrderManager.Backend.Proto" Version="1.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RestaurantOrderManager.UI.Theme\RestaurantOrderManager.UI.Theme.csproj" />
+  </ItemGroup>
 
 </Project>

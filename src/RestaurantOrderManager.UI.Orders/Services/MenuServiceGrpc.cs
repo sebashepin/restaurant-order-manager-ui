@@ -2,6 +2,7 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using RestaurantOrderManager.Backend.Grpc;
 using RestaurantOrderManager.UI.Orders.Models;
+using MenuItem = RestaurantOrderManager.Backend.Grpc.MenuItem;
 using UiMenuItem = RestaurantOrderManager.UI.Orders.Models.MenuItem;
 
 namespace RestaurantOrderManager.UI.Orders.Services;
@@ -67,7 +68,7 @@ public sealed class MenuServiceGrpc(Menu.MenuClient client, MenuServiceWwwroot f
         }
     }
 
-    private static UiMenuItem ToUiMenuItem(Backend.Grpc.MenuItem m)
+    private static UiMenuItem ToUiMenuItem(MenuItem m)
         => new()
         {
             Id = m.Id,

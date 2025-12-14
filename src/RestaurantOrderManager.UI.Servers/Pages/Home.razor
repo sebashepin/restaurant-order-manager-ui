@@ -1,7 +1,87 @@
 ﻿@page "/"
+@using RestaurantOrderManager.UI.Servers.Services
+@inject IOrdersAdminService Admin
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Servers – Live Orders</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Live Orders</h1>
 
-Welcome to your new app.
+<div class="row wrap" style="margin:8px 0;">
+    <button class="btn" @onclick="RefreshAsync">Refresh</button>
+    <span class="small">@_lastUpdatedText</span>
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <span class="error">@_error</span>
+    }
+    <span class="spacer muted small">Tap an order to cycle status (disabled until backend RPC available)</span>
+
+</div>
+
+@if (_tables is null)
+{
+    <p>Loading…</p>
+}
+else if (_tables.Count == 0)
+{
+    <p>No tables configured.</p>
+}
+else
+{
+    <div class="grid-cards">
+        @foreach (var t in _tables)
+        {
+            <div class="card">
+                <h3>Table @t</h3>
+                @if (_ordersByTable.TryGetValue(t, out var orders) && orders.Count > 0)
+                {
+                    <ul class="list-plain">
+                        @foreach (var o in orders)
+                        {
+                            <li class="divider" style="padding:6px 0;">
+                                <div class="row between">
+                                    <span class="mono">@o.OrderId</span>
+                                    <button disabled class="btn" title="Change status (coming soon)">@o.Status</button>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="muted">No live orders</div>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private IReadOnlyList<string>? _tables;
+    private readonly Dictionary<string, IReadOnlyList<AdminOrder>> _ordersByTable = new();
+    private string? _error;
+    private string _lastUpdatedText = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshAsync();
+    }
+
+    private async Task RefreshAsync()
+    {
+        _error = null;
+        try
+        {
+            _tables ??= await Admin.ListTablesAsync();
+            foreach (var t in _tables)
+            {
+                var list = await Admin.GetLiveOrdersAsync(t);
+                _ordersByTable[t] = list;
+            }
+            _lastUpdatedText = $"Updated at {DateTime.Now:HH:mm:ss}";
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+    }
+}

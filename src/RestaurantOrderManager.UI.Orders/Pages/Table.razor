@@ -138,7 +138,7 @@ else
 
     private async Task Add(MenuItem item)
     {
-        _state.Add(item, 1);
+        _state.Add(item);
         await Persist();
         StateHasChanged();
     }
