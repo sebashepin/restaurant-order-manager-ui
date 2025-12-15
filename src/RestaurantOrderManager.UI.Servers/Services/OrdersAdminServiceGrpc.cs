@@ -5,18 +5,11 @@ namespace RestaurantOrderManager.UI.Servers.Services;
 
 public sealed class OrdersAdminServiceGrpc(Menu.MenuClient client, IConfiguration cfg) : IOrdersAdminService
 {
-    private IReadOnlyList<string>? _tablesCache;
-
-    public ValueTask<IReadOnlyList<string>> ListTablesAsync(CancellationToken ct = default)
+    public async ValueTask<IReadOnlyList<TableInfo>> ListTablesAsync(CancellationToken ct = default)
     {
-        if (_tablesCache is { Count: > 0 }) return ValueTask.FromResult(_tablesCache);
-
-        // Try to read configured tables; fallback to a sane default
-        var configured = cfg.GetSection("Servers:Tables").Get<string[]>()
-                        ?? (cfg["Servers:Tables"]?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? Array.Empty<string>());
-
-        _tablesCache = (configured.Length > 0 ? configured : new[] { "A1", "A2", "B1", "B2" }).ToList();
-        return ValueTask.FromResult(_tablesCache);
+        var resp = await client.GetTableListAsync(new GetTableListRequest(), cancellationToken: ct);
+        // Return full proto objects so UI can access Id/Description/Seats
+        return resp.Tables.ToList();
     }
 
     public async ValueTask<IReadOnlyList<AdminOrder>> GetLiveOrdersAsync(string tableId, CancellationToken ct = default)
@@ -27,7 +20,7 @@ public sealed class OrdersAdminServiceGrpc(Menu.MenuClient client, IConfiguratio
             Timestamp = Timestamp.FromDateTime(DateTime.UtcNow)
         }, cancellationToken: ct);
 
-        if (resp.OrderIds.Count == 0) return Array.Empty<AdminOrder>();
+        if (resp.OrderIds.Count == 0) return [];
 
         var list = new List<AdminOrder>(resp.OrderIds.Count);
         foreach (var orderId in resp.OrderIds)

@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using RestaurantOrderManager.UI.Servers.Services
+@using RestaurantOrderManager.Backend.Grpc
 @inject IOrdersAdminService Admin
 
 <PageTitle>Servers – Live Orders</PageTitle>
@@ -31,8 +32,14 @@ else
         @foreach (var t in _tables)
         {
             <div class="card">
-                <h3>Table @t</h3>
-                @if (_ordersByTable.TryGetValue(t, out var orders) && orders.Count > 0)
+                <h3>
+                    Table @t.Description
+                    @if (t.Seats > 0)
+                    {
+                        <span class="badge">@t.Seats seats</span>
+                    }
+                </h3>
+                @if (_ordersByTable.TryGetValue(t.TableId, out var orders) && orders.Count > 0)
                 {
                     <ul class="list-plain">
                         @foreach (var o in orders)
@@ -56,7 +63,7 @@ else
 }
 
 @code {
-    private IReadOnlyList<string>? _tables;
+    private IReadOnlyList<TableInfo>? _tables;
     private readonly Dictionary<string, IReadOnlyList<AdminOrder>> _ordersByTable = new();
     private string? _error;
     private string _lastUpdatedText = string.Empty;
@@ -74,8 +81,8 @@ else
             _tables ??= await Admin.ListTablesAsync();
             foreach (var t in _tables)
             {
-                var list = await Admin.GetLiveOrdersAsync(t);
-                _ordersByTable[t] = list;
+                var list = await Admin.GetLiveOrdersAsync(t.TableId);
+                _ordersByTable[t.TableId] = list;
             }
             _lastUpdatedText = $"Updated at {DateTime.Now:HH:mm:ss}";
         }

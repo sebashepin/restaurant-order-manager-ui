@@ -40,7 +40,7 @@ code { color: #c02d76; }
 .row { display: flex; align-items: center; gap: 12px; }
 .row.between { justify-content: space-between; }
 .row.wrap { flex-wrap: wrap; }
-.badge { border: 1px solid #ddd; border-radius: 999px; padding: .2rem .6rem; background: #f7f7f7; font-variant-numeric: tabular-nums; }
+.badge { margin: 5px; border: 1px solid #ddd; border-radius: 999px; padding: .2rem .6rem; background: #f7f7f7; font-variant-numeric: tabular-nums; }
 .divider { border-top: 1px dashed #eee; }
 
 /* Orders-specific (kept for Orders app) */
