@@ -6,6 +6,7 @@ using RestaurantOrderManager.UI.Orders;
 using RestaurantOrderManager.UI.Orders.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
@@ -13,7 +14,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<ILocalStorage, LocalStorageJs>();
 
 // gRPC-Web client using configurable backend URL from appsettings.json: Backend:BaseAddress
-var backendBase = builder.Configuration["Backend:BaseAddress"] ?? "http://192.168.0.206:5134";
+var backendBase = builder.Configuration["Backend:BaseAddress"] ?? "http://localhost:5134";
 Console.WriteLine($"Backend base address: {backendBase}");
 builder.Services
     .AddGrpcClient<Menu.MenuClient>(o =>

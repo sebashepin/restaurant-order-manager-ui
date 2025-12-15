@@ -93,3 +93,12 @@ sequenceDiagram
 
 ## License
 See `LICENSE` in the repository root.
+
+## TODO
+
+- [x] Add mDNS support for local development
+- [x] Add backend integration
+- [ ] Add unit tests
+- [ ] Realtime communication (SignalR?)
+- [ ] Add a management project
+- [ ] Security for Orders
